@@ -40,74 +40,18 @@ public class CurrentLocationActivity extends AppCompatActivity {
         btnnextpage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(CurrentLocationActivity.this, LoginActivity.class);
+                Intent intent = new Intent(CurrentLocationActivity.this, MainActivity.class);
                 startActivity(intent);
             }
         });
 
-
-        //initialize fusedLocationProviderClient
-
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-
         getcurrentlocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                check permission
-
-                if (ActivityCompat.checkSelfPermission(CurrentLocationActivity.this
-                        , Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-//when location is granted
-                    getClocation();
-                } else {
-                    ActivityCompat.requestPermissions(CurrentLocationActivity.this,
-                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44
-                    );
-                }
+                startActivity(new Intent(CurrentLocationActivity.this, MapsActivity.class));
             }
         });
 
-    }
-
-    private void getClocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
-            @Override
-            public void onComplete(@NonNull Task<Location> task) {
-
-                Location location = task.getResult();
-                if(location != null){
-                    Geocoder geocoder = new Geocoder(CurrentLocationActivity.this, Locale.getDefault());
-                    //address
-                    try {
-                        List<Address> addresses = geocoder.getFromLocation(
-                                location.getLatitude(),location.getLongitude(),1
-
-                        );
-
-//                        setLocation on text View
-                        getcurrentlocation.setText(Html.fromHtml("<font color='#fff'><b>Address : </b> <br><br></font>"
-                        +addresses.get(0).getAddressLine(0)
-
-                        ));
-
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-            }
-        });
 
     }
 }

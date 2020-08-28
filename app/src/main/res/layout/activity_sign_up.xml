@@ -1,55 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:fitsSystemWindows="true"
-    android:background="@color/primary_dark">
+    android:background="@color/primary_dark"
+    android:fitsSystemWindows="true">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="56dp"
+        android:orientation="vertical"
         android:paddingLeft="24dp"
+        android:paddingTop="56dp"
         android:paddingRight="24dp">
 
-        <ImageView android:src="@drawable/logo"
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="72dp"
+            android:layout_gravity="center_horizontal"
             android:layout_marginBottom="24dp"
-            android:layout_gravity="center_horizontal" />
+            android:src="@drawable/logo2" />
 
         <!-- Name Label -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColorHint="@color/accent"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_name"
+            android:layout_marginBottom="8dp"
+            android:textColorHint="@color/accent">
+
+            <EditText
+                android:id="@+id/input_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="Name"
                 android:inputType="textPersonName"
-                android:textColor="@color/accent"
-                android:hint="Name" />
+                android:textColor="@color/accent" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Address Label -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColorHint="@color/accent"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_address"
+            android:layout_marginBottom="8dp"
+            android:textColorHint="@color/accent">
+
+            <EditText
+                android:id="@+id/input_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="Address"
                 android:inputType="textPostalAddress"
-                android:textColor="@color/accent"
-                android:hint="Address" />
+                android:textColor="@color/accent" />
         </com.google.android.material.textfield.TextInputLayout>
-
 
 
         <!--  Email Label -->
@@ -57,14 +60,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:textColorHint="@color/accent"
-            android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_email"
+            android:layout_marginBottom="8dp"
+            android:textColorHint="@color/accent">
+
+            <EditText
+                android:id="@+id/input_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/accent"
+                android:hint="Email"
                 android:inputType="textEmailAddress"
-                android:hint="Email" />
+                android:textColor="@color/accent" />
         </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -72,15 +77,17 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColorHint="@color/accent"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_mobile"
+            android:layout_marginBottom="8dp"
+            android:textColorHint="@color/accent">
+
+            <EditText
+                android:id="@+id/input_mobile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="Mobile Number"
                 android:inputType="number"
-                android:textColor="@color/accent"
-                android:hint="Mobile Number" />
+                android:textColor="@color/accent" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Password Label -->
@@ -88,29 +95,33 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:textColorHint="@color/accent"
-            android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_password"
+            android:layout_marginBottom="8dp"
+            android:textColorHint="@color/accent">
+
+            <EditText
+                android:id="@+id/input_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="Password"
                 android:inputType="textPassword"
-                android:textColor="@color/accent"
-                android:hint="Password"/>
+                android:textColor="@color/accent" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Password Re-enter Label -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColorHint="@color/accent"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_reEnterPassword"
+            android:layout_marginBottom="8dp"
+            android:textColorHint="@color/accent">
+
+            <EditText
+                android:id="@+id/input_reEnterPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/accent"
+                android:hint="Re-enter Password"
                 android:inputType="textPassword"
-                android:hint="Re-enter Password"/>
+                android:textColor="@color/accent" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Signup Button -->
@@ -120,19 +131,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="24dp"
-            android:padding="12dp"
-            android:textColor="@color/accent"
             android:background="@color/primary_darker"
-            android:text="Create Account"/>
+            android:padding="12dp"
+            android:text="Create Account"
+            android:textColor="@color/accent" />
 
-        <TextView android:id="@+id/link_login"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:textColor="@color/accent"
-            android:text="Already a member? Login"
-            android:gravity="center"
-            android:textSize="16dip"/>
 
     </LinearLayout>
 </ScrollView>
