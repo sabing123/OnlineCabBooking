@@ -38,24 +38,24 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/signin"
+            android:id="@+id/btnDriver"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.5"
             android:background="@drawable/btn_bg"
-            android:text="Sign In"
-            android:onClick="open_signin"
+            android:text="I am Driver"
+            android:onClick="open_driver"
 
            />
 
         <Button
-            android:id="@+id/signup"
+            android:id="@+id/btncustomer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.5"
             android:background="@drawable/btn_bg"
-            android:text="Signup"
-            android:onClick="open_signup"
+            android:text="I am Passenger"
+            android:onClick="open_passenger"
             />
 
     </LinearLayout>
