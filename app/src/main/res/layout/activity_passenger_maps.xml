@@ -22,8 +22,12 @@
         android:id="@+id/btn_customer_setting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
+        android:layout_marginStart="11dp"
+        android:layout_marginTop="3dp"
         android:layout_marginEnd="312dp"
         android:layout_marginBottom="680dp"
         android:background="@drawable/driver_btn_bg"
@@ -33,12 +37,14 @@
         android:id="@+id/btn_customer_logout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="17dp"
-        android:layout_marginBottom="680dp"
+        android:layout_marginStart="308dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="683dp"
         android:background="@drawable/driver_btn_bg"
         android:text="Logout" />
 
@@ -48,11 +54,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="11dp"
-        android:layout_marginBottom="14dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginBottom="21dp"
         android:background="@drawable/driver_btn_bg"
         android:text="Hire A Cab" />
-
 
 
 </RelativeLayout>

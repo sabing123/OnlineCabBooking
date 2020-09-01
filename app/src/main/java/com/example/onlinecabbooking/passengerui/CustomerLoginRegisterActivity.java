@@ -122,7 +122,7 @@ public class CustomerLoginRegisterActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 Toast.makeText(CustomerLoginRegisterActivity.this, "Successfully Login...", Toast.LENGTH_SHORT).show();
                                 dialog.dismiss();
-                                startActivity(new Intent(CustomerLoginRegisterActivity.this, MainPageActivity.class));
+                                startActivity(new Intent(CustomerLoginRegisterActivity.this, PassengerMapsActivity.class));
 
                             } else {
                                 Toast.makeText(CustomerLoginRegisterActivity.this, "Failed to Login Customer. Please Try Again.", Toast.LENGTH_SHORT).show();
