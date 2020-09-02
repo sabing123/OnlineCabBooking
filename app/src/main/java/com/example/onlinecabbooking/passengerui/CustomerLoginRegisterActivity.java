@@ -1,8 +1,5 @@
 package com.example.onlinecabbooking.passengerui;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,31 +10,39 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.onlinecabbooking.MainPageActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.onlinecabbooking.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class CustomerLoginRegisterActivity extends AppCompatActivity {
 
-    private EditText input_customer_name,input_customer_address,input_customer_mblnum,input_customer_email,input_customer_password;
-    private TextView link_customer_login,customer_Status;
-    private Button btn_customer_signup,btn_customer_login;
-    TextInputLayout txtname,txtinput_customer_address,txtinput_customer_mobile;
+    private EditText input_customer_name, input_customer_address, input_customer_mblnum, input_customer_email, input_customer_password;
+    private TextView link_customer_login, customer_Status;
+    private Button btn_customer_signup, btn_customer_login;
+    TextInputLayout txtname, txtinput_customer_address, txtinput_customer_mobile;
 
     private FirebaseAuth mauth;
     private ProgressDialog dialog;
+
+    private DatabaseReference CustomerDatabaseRef;
+    private String onlineCustomerID;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_login_register);
 
 
-
         mauth = FirebaseAuth.getInstance();
+
         dialog = new ProgressDialog(this, R.style.AppTheme_Dark_Dialog);
 
         input_customer_name = findViewById(R.id.input_customer_name);
@@ -54,7 +59,6 @@ public class CustomerLoginRegisterActivity extends AppCompatActivity {
         //login system
         customer_Status = findViewById(R.id.customer_Status);
         link_customer_login = findViewById(R.id.link_customer_login);
-
 
         btn_customer_signup = findViewById(R.id.btn_customer_signup);
         btn_customer_login = findViewById(R.id.btn_customer_login);
@@ -106,8 +110,7 @@ public class CustomerLoginRegisterActivity extends AppCompatActivity {
 
         if (TextUtils.isEmpty(cemail)) {
             Toast.makeText(this, "Please enter Email...", Toast.LENGTH_SHORT).show();
-        }
-        else if (TextUtils.isEmpty(cpassword)) {
+        } else if (TextUtils.isEmpty(cpassword)) {
             Toast.makeText(this, "Please enter Password...", Toast.LENGTH_SHORT).show();
         } else {
             dialog.setIndeterminate(true);
@@ -120,9 +123,9 @@ public class CustomerLoginRegisterActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
+                                startActivity(new Intent(CustomerLoginRegisterActivity.this, PassengerMapsActivity.class));
                                 Toast.makeText(CustomerLoginRegisterActivity.this, "Successfully Login...", Toast.LENGTH_SHORT).show();
                                 dialog.dismiss();
-                                startActivity(new Intent(CustomerLoginRegisterActivity.this, PassengerMapsActivity.class));
 
                             } else {
                                 Toast.makeText(CustomerLoginRegisterActivity.this, "Failed to Login Customer. Please Try Again.", Toast.LENGTH_SHORT).show();
@@ -137,8 +140,7 @@ public class CustomerLoginRegisterActivity extends AppCompatActivity {
     private void RegisterCustomer(String cemail, String cpassword) {
         if (TextUtils.isEmpty(cemail)) {
             Toast.makeText(this, "Please enter Email...", Toast.LENGTH_SHORT).show();
-        }
-       else if (TextUtils.isEmpty(cpassword)) {
+        } else if (TextUtils.isEmpty(cpassword)) {
             Toast.makeText(this, "Please enter Password...", Toast.LENGTH_SHORT).show();
         } else {
             dialog.setIndeterminate(true);
@@ -151,6 +153,14 @@ public class CustomerLoginRegisterActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
+                                onlineCustomerID = mauth.getCurrentUser().getUid();
+                                CustomerDatabaseRef = FirebaseDatabase.getInstance().getReference()
+                                        .child("Users").child("Customers").child(onlineCustomerID);
+                                CustomerDatabaseRef.setValue(true);
+                                Intent driverIntent = new Intent(CustomerLoginRegisterActivity.this, PassengerMapsActivity.class);
+                                startActivity(driverIntent);
+
+
                                 Toast.makeText(CustomerLoginRegisterActivity.this, "Successfully Register Customer Information...", Toast.LENGTH_SHORT).show();
                                 dialog.dismiss();
                             } else {

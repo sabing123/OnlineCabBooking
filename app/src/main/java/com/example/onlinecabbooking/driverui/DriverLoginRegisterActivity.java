@@ -15,11 +15,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.onlinecabbooking.MainPageActivity;
 import com.example.onlinecabbooking.R;
+import com.example.onlinecabbooking.passengerui.CustomerLoginRegisterActivity;
+import com.example.onlinecabbooking.passengerui.PassengerMapsActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class DriverLoginRegisterActivity extends AppCompatActivity {
 
@@ -29,6 +33,9 @@ public class DriverLoginRegisterActivity extends AppCompatActivity {
 
     private FirebaseAuth mauth;
     private ProgressDialog dialog;
+
+    private DatabaseReference DriverDatabaseRef;
+    private String onlineDriverID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +52,9 @@ public class DriverLoginRegisterActivity extends AppCompatActivity {
         }
 
         mauth = FirebaseAuth.getInstance();
+
+
+
         dialog = new ProgressDialog(this);
         input_driver_email = findViewById(R.id.input_driver_email);
         input_driver_password = findViewById(R.id.input_driver_password);
@@ -142,6 +152,14 @@ public class DriverLoginRegisterActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
+                                onlineDriverID = mauth.getCurrentUser().getUid();
+                                DriverDatabaseRef = FirebaseDatabase.getInstance().getReference()
+                                        .child("Users").child("Drivers").child(onlineDriverID);
+
+                                DriverDatabaseRef.setValue(true);
+                                Intent driverIntent = new Intent(DriverLoginRegisterActivity.this, DriverMapsActivity.class);
+                                startActivity(driverIntent);
+
                                 Toast.makeText(DriverLoginRegisterActivity.this, "Successfully Register Driver Information...", Toast.LENGTH_SHORT).show();
                                 dialog.dismiss();
                                 startActivity(new Intent(DriverLoginRegisterActivity.this, DriverMapsActivity.class));
