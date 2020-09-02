@@ -97,18 +97,30 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
     @Override
     public void onLocationChanged(@NonNull Location location) {
 
-        lastlocation = location;
+        if (getApplicationContext() != null)
+        {
+            lastlocation = location;
 
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(12));
+            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(13));
 
-        String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference DriverAvailibilityReferences = FirebaseDatabase.getInstance()
-                .getReference().child("Driver Available");
-        GeoFire geoFire = new GeoFire(DriverAvailibilityReferences);
-        geoFire.setLocation(userID, new GeoLocation(location.getLatitude(), location.getLongitude()));
+            String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
+
+            DatabaseReference DriverAvailibilityReferences = FirebaseDatabase.getInstance()
+                    .getReference().child("Driver Available");
+            GeoFire geoFireAvailibility= new GeoFire(DriverAvailibilityReferences);
+
+
+            DatabaseReference DriverWorkingRef = FirebaseDatabase.getInstance().getReference().child("Drivers Working");
+            GeoFire geoFireworking = new GeoFire(DriverWorkingRef);
+
+            geoFireAvailibility.setLocation(userID, new GeoLocation(location.getLatitude(), location.getLongitude()));
+            geoFireworking.setLocation(userID, new GeoLocation(location.getLatitude(), location.getLongitude()));
+
+
+        }
     }
 
     @Override

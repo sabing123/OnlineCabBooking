@@ -196,6 +196,19 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
                     {
                         DriverMarker.remove();
                     }
+
+                    Location Location1  = new Location("");
+                    Location1.setLatitude(PassengerPickUpLocation.latitude);
+                    Location1.setLongitude(PassengerPickUpLocation.longitude);
+
+                    Location Location2  = new Location("");
+                    Location2.setLatitude(DriverLatLng.latitude);
+                    Location2.setLongitude(DriverLatLng.longitude);
+
+                     float Distance = Location1.distanceTo(Location2);
+                     btn_call_cab.setText("Driver Found : " + String.valueOf(Distance));
+
+
                     DriverMarker = mMap.addMarker(new MarkerOptions()
                             .position(DriverLatLng).title("Your Cab is Here"));
 
