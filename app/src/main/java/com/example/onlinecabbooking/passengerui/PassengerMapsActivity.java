@@ -69,8 +69,6 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
     private DatabaseReference DriverLocationRef;
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -182,31 +180,30 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
                     double LocationLng = 1;
                     btn_call_cab.setText("Driver Found");
 
-                    if(driverLocationMap.get(0) != null){
+                    if (driverLocationMap.get(0) != null) {
                         LocationLat = Double.parseDouble(driverLocationMap.get(0).toString());
 
                     }
-                    if(driverLocationMap.get(1) != null){
+                    if (driverLocationMap.get(1) != null) {
                         LocationLng = Double.parseDouble(driverLocationMap.get(1).toString());
 
                     }
 
-                    LatLng DriverLatLng = new LatLng(LocationLat,LocationLng);
-                    if (DriverMarker != null)
-                    {
+                    LatLng DriverLatLng = new LatLng(LocationLat, LocationLng);
+                    if (DriverMarker != null) {
                         DriverMarker.remove();
                     }
 
-                    Location Location1  = new Location("");
+                    Location Location1 = new Location("");
                     Location1.setLatitude(PassengerPickUpLocation.latitude);
                     Location1.setLongitude(PassengerPickUpLocation.longitude);
 
-                    Location Location2  = new Location("");
+                    Location Location2 = new Location("");
                     Location2.setLatitude(DriverLatLng.latitude);
                     Location2.setLongitude(DriverLatLng.longitude);
 
-                     float Distance = Location1.distanceTo(Location2);
-                     btn_call_cab.setText("Driver Found : " + String.valueOf(Distance));
+                    float Distance = Location1.distanceTo(Location2);
+                    btn_call_cab.setText("Driver Found : " + String.valueOf(Distance));
 
 
                     DriverMarker = mMap.addMarker(new MarkerOptions()

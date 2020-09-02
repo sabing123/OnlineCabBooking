@@ -26,10 +26,16 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.List;
 
 
 public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCallback,
@@ -47,6 +53,8 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
     private FirebaseUser dCurrentUser;
 
     private Boolean CurrentLogoutDriverStatus = false;
+    private DatabaseReference AssignedCustomerRef, AssignedCustomerPickUpRef;
+    private String driverID, customerID;
 
 
     @Override
@@ -56,6 +64,7 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
 
         mAuth = FirebaseAuth.getInstance();
         dCurrentUser = mAuth.getCurrentUser();
+        driverID = mAuth.getCurrentUser().getUid();
 
 
         btn_driver_logout = findViewById(R.id.btn_driver_logout);
@@ -79,6 +88,73 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
             }
         });
 
+        GetAssignedCustomerRequest();
+
+    }
+
+    private void GetAssignedCustomerRequest() {
+
+        AssignedCustomerRef = FirebaseDatabase.getInstance().getReference()
+                .child("Users").child("Drivers").child(driverID).child("CustomerRideID");
+        AssignedCustomerRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                if (snapshot.exists()) {
+                    customerID = snapshot.getValue().toString();
+                    GetAssignedCustomerPickUpLocation();
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+    }
+
+    private void GetAssignedCustomerPickUpLocation() {
+
+        AssignedCustomerPickUpRef = FirebaseDatabase.getInstance().getReference().child("Customer Request")
+                .child(customerID).child("l");
+        AssignedCustomerPickUpRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    List<Object> customerLocationMap = (List<Object>) snapshot.getValue();
+
+                    double LocationLat = 0;
+                    double LocationLng = 1;
+
+
+                    if (customerLocationMap.get(0) != null) {
+                        LocationLat = Double.parseDouble(customerLocationMap.get(0).toString());
+
+                    }
+                    if (customerLocationMap.get(1) != null) {
+                        LocationLng = Double.parseDouble(customerLocationMap.get(1).toString());
+
+                    }
+
+                    LatLng DriverLatLng = new LatLng(LocationLat, LocationLng);
+                    mMap.addMarker(new MarkerOptions()
+                            .position(DriverLatLng).title("PickUp Location"));
+
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
 
     }
 
@@ -97,8 +173,7 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
     @Override
     public void onLocationChanged(@NonNull Location location) {
 
-        if (getApplicationContext() != null)
-        {
+        if (getApplicationContext() != null) {
             lastlocation = location;
 
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
@@ -108,18 +183,22 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
             String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 
-            DatabaseReference DriverAvailibilityReferences = FirebaseDatabase.getInstance()
-                    .getReference().child("Driver Available");
-            GeoFire geoFireAvailibility= new GeoFire(DriverAvailibilityReferences);
-
+            DatabaseReference DriverAvailibilityReferences = FirebaseDatabase.getInstance().getReference().child("Driver Available");
+            GeoFire geoFireAvailibility = new GeoFire(DriverAvailibilityReferences);
 
             DatabaseReference DriverWorkingRef = FirebaseDatabase.getInstance().getReference().child("Drivers Working");
             GeoFire geoFireworking = new GeoFire(DriverWorkingRef);
 
-            geoFireAvailibility.setLocation(userID, new GeoLocation(location.getLatitude(), location.getLongitude()));
-            geoFireworking.setLocation(userID, new GeoLocation(location.getLatitude(), location.getLongitude()));
-
-
+            switch (customerID) {
+                case "":
+                    geoFireworking.removeLocation(userID);
+                    geoFireAvailibility.setLocation(userID, new GeoLocation(location.getLatitude(), location.getLongitude()));
+                    break;
+                default:
+                    geoFireAvailibility.removeLocation(userID);
+                    geoFireworking.setLocation(userID, new GeoLocation(location.getLatitude(), location.getLongitude()));
+                    break;
+            }
         }
     }
 
@@ -173,7 +252,7 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
                 .getReference().child("Driver Available");
         GeoFire geoFire = new GeoFire(DriverAvailibilityReferences);
         geoFire.removeLocation(userID);
-        LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient,this);
+        LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
     }
 
     private void LogoutDriver() {
