@@ -54,7 +54,7 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
 
     private Boolean CurrentLogoutDriverStatus = false;
     private DatabaseReference AssignedCustomerRef, AssignedCustomerPickUpRef;
-    private String driverID, customerID;
+    private String driverID, customerID="";
 
 
     @Override
