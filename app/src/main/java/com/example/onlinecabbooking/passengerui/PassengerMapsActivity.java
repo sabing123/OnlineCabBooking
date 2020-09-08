@@ -15,6 +15,7 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.example.onlinecabbooking.MainActivity;
 import com.example.onlinecabbooking.R;
+import com.example.onlinecabbooking.SettingActivity;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
@@ -27,6 +28,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -52,21 +54,24 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
     Location lastlocation;
     LocationRequest locationRequest;
 
-    private Button Customer_Logout_btn, btn_call_cab;
+    private Button Customer_Logout_btn, btn_call_cab,btn_customer_setting;
     private String passengerID;
     private LatLng PassengerPickUpLocation;
     private int radius = 1;
-    private Boolean driverFound = false;
+    private Boolean driverFound = false, requestType = false;
     private String driverFoundID;
 
     private FirebaseAuth mAuth;
     private FirebaseUser dCurrentUser;
-    Marker DriverMarker;
+    Marker DriverMarker, pickupMarker;
+    GeoQuery geoQuery;
 
     private DatabaseReference PassengerDatabaseRef;
     private DatabaseReference DriverAvailableRef;
     private DatabaseReference DriverRef;
     private DatabaseReference DriverLocationRef;
+
+    private ValueEventListener DriverLocationRefListener;
 
 
     @Override
@@ -84,6 +89,8 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
                 .child("Drivers Working");
 
         Customer_Logout_btn = findViewById(R.id.btn_customer_logout);
+
+        btn_customer_setting = findViewById(R.id.btn_customer_setting);
         btn_call_cab = findViewById(R.id.btn_call_cab);
 
 
@@ -91,6 +98,16 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        btn_customer_setting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(PassengerMapsActivity.this, SettingActivity.class);
+                intent.putExtra("type","Customers");
+                startActivity(intent);
+            }
+        });
+
         Customer_Logout_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -98,18 +115,60 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
                 LogoutPassenger();
             }
         });
+
+
         btn_call_cab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                GeoFire geoFire = new GeoFire(PassengerDatabaseRef);
-                geoFire.setLocation(passengerID, new GeoLocation(lastlocation.getLatitude(), lastlocation.getLongitude()));
 
-                PassengerPickUpLocation = new LatLng(lastlocation.getLatitude(), lastlocation.getLongitude());
-                mMap.addMarker(new MarkerOptions().position(PassengerPickUpLocation).title("PickUp Passenger From Here"));
+                if (requestType) {
+                    requestType = false;
+                    geoQuery.removeAllListeners();
+                    DriverLocationRef.removeEventListener(DriverLocationRefListener);
+
+                    if (driverFound != null){
+                        DriverRef  = FirebaseDatabase.getInstance().getReference().child("Users")
+                                .child("Drivers").child(driverFoundID).child("CustomerRideID");
+
+                        DriverRef.removeValue();
+
+                        driverFound = null;
+                    }
+
+                    driverFound = false;
+                    radius = 1;
+
+                    String customerId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+                    GeoFire geoFire = new GeoFire(PassengerDatabaseRef);
+                    geoFire.removeLocation(customerId);
+                    if (pickupMarker != null)
+                    {
+                        pickupMarker.remove();
+                    }
+
+                    if (DriverMarker != null)
+                    {
+                        DriverMarker.remove();
+                    }
+
+                    btn_call_cab.setText("Call A Cab");
+
+                } else {
+
+                    requestType = true;
+
+                    GeoFire geoFire = new GeoFire(PassengerDatabaseRef);
+                    geoFire.setLocation(passengerID, new GeoLocation(lastlocation.getLatitude(), lastlocation.getLongitude()));
+
+                    PassengerPickUpLocation = new LatLng(lastlocation.getLatitude(), lastlocation.getLongitude());
+                    mMap.addMarker(new MarkerOptions().position(PassengerPickUpLocation).title("My Location").icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_user)));
+
+                    btn_call_cab.setText("Getting Your Cab...");
+                    GetClosestDriverCab();
+                }
 
 
-                btn_call_cab.setText("Getting Your Cab...");
-                GetClosestDriverCab();
             }
         });
 
@@ -125,7 +184,7 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
-                if (!driverFound) {
+                if (!driverFound && requestType) {
                     driverFound = true;
                     driverFoundID = key;
 
@@ -134,7 +193,6 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
                     HashMap driverMap = new HashMap();
                     driverMap.put("CustomerRideID", passengerID);
                     DriverRef.updateChildren(driverMap);
-
 
                     GettingDriverLocation();
                     btn_call_cab.setText("Looking For Drive Location");
@@ -171,10 +229,11 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
     }
 
     private void GettingDriverLocation() {
-        DriverLocationRef.child(driverFoundID).child("l").addValueEventListener(new ValueEventListener() {
+
+        DriverLocationRefListener = DriverLocationRef.child(driverFoundID).child("l").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
+                if (snapshot.exists() && requestType) {
                     List<Object> driverLocationMap = (List<Object>) snapshot.getValue();
                     double LocationLat = 0;
                     double LocationLng = 1;
@@ -203,11 +262,17 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
                     Location2.setLongitude(DriverLatLng.longitude);
 
                     float Distance = Location1.distanceTo(Location2);
-                    btn_call_cab.setText("Driver Found : " + String.valueOf(Distance));
 
-
+                    if (Distance < 90)
+                    {
+                        btn_call_cab.setText("Driver's Arrived");
+                    }
+                    else {
+                        btn_call_cab.setText("Driver Found : " + String.valueOf(Distance));
+                    }
+                    
                     DriverMarker = mMap.addMarker(new MarkerOptions()
-                            .position(DriverLatLng).title("Your Cab is Here"));
+                            .position(DriverLatLng).title("Your Cab is Here").icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_cab)));
 
                 }
 
@@ -266,7 +331,7 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
 
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(12));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(16));
         mMap.getUiSettings().setZoomControlsEnabled(true);
 
     }

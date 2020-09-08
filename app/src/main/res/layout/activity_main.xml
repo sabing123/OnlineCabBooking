@@ -11,9 +11,8 @@
         android:layout_height="711dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="2dp"
         android:layout_marginBottom="72dp"
-        android:background="@color/primary"
+        android:background="@color/primary_dark"
         android:orientation="vertical">
 
         <ImageView
@@ -43,10 +42,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1.5"
             android:background="@drawable/btn_bg"
-            android:text="I am Driver"
             android:onClick="open_driver"
-
-           />
+            android:text="I am Driver"
+            />
 
         <Button
             android:id="@+id/btncustomer"
@@ -54,9 +52,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1.5"
             android:background="@drawable/btn_bg"
-            android:text="I am Passenger"
             android:onClick="open_passenger"
-            />
+            android:text="I am Passenger" />
 
     </LinearLayout>
 

@@ -15,6 +15,8 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.example.onlinecabbooking.MainActivity;
 import com.example.onlinecabbooking.R;
+import com.example.onlinecabbooking.SettingActivity;
+import com.example.onlinecabbooking.passengerui.PassengerMapsActivity;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.common.ConnectionResult;
@@ -25,7 +27,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -54,7 +58,10 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
 
     private Boolean CurrentLogoutDriverStatus = false;
     private DatabaseReference AssignedCustomerRef, AssignedCustomerPickUpRef;
-    private String driverID, customerID="";
+    private String driverID, customerID = "";
+    Marker pickupMaker;
+
+    private ValueEventListener AssignedCustomerPickUpRefListener;
 
 
     @Override
@@ -74,6 +81,16 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+
+        btn_driver_setting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DriverMapsActivity.this, SettingActivity.class);
+                intent.putExtra("type","Drivers");
+                startActivity(intent);
+            }
+        });
 
 
         btn_driver_logout.setOnClickListener(new View.OnClickListener() {
@@ -103,8 +120,18 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
                 if (snapshot.exists()) {
                     customerID = snapshot.getValue().toString();
                     GetAssignedCustomerPickUpLocation();
-                }
+                } else {
+                    customerID = "";
+                    if (pickupMaker != null) {
+                        pickupMaker.remove();
+                    }
+                    if (AssignedCustomerPickUpRefListener != null) {
+                        AssignedCustomerPickUpRef.removeEventListener(AssignedCustomerPickUpRefListener);
 
+                    }
+
+
+                }
 
             }
 
@@ -121,9 +148,10 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
 
         AssignedCustomerPickUpRef = FirebaseDatabase.getInstance().getReference().child("Customer Request")
                 .child(customerID).child("l");
-        AssignedCustomerPickUpRef.addValueEventListener(new ValueEventListener() {
+        AssignedCustomerPickUpRefListener = AssignedCustomerPickUpRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+
                 if (snapshot.exists()) {
                     List<Object> customerLocationMap = (List<Object>) snapshot.getValue();
 
@@ -141,9 +169,8 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
                     }
 
                     LatLng DriverLatLng = new LatLng(LocationLat, LocationLng);
-                    mMap.addMarker(new MarkerOptions()
-                            .position(DriverLatLng).title("PickUp Location"));
-
+                    pickupMaker =  mMap.addMarker(new MarkerOptions()
+                            .position(DriverLatLng).title("Passenger Pickup Location").icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_user)));
 
                 }
 
@@ -178,7 +205,7 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
 
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-            mMap.animateCamera(CameraUpdateFactory.zoomTo(13));
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(16));
 
             String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
@@ -209,7 +236,9 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
         locationRequest.setFastestInterval(1000);
         locationRequest.setPriority(locationRequest.PRIORITY_HIGH_ACCURACY);
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
         LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
