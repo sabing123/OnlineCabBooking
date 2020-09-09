@@ -111,9 +111,7 @@ public class SettingActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Checker = "clicked";
-
-                CropImage.activity().setAspectRatio(1, 1)
-                        .start(SettingActivity.this);
+                CropImage.activity().setAspectRatio(1, 1).start(SettingActivity.this);
 
             }
         });
@@ -185,7 +183,6 @@ public class SettingActivity extends AppCompatActivity {
                         Uri downloadUrl = task.getResult();
                         myUrl = downloadUrl.toString();
 
-
                         HashMap<String, Object> userMap = new HashMap<>();
                         userMap.put("uid", mAuth.getCurrentUser().getUid());
                         userMap.put("name", NameEditText.getText().toString());
@@ -196,8 +193,7 @@ public class SettingActivity extends AppCompatActivity {
                             userMap.put("CarName", DriverCarName.getText().toString());
                         }
 
-                        databaseReference.child(mAuth.getCurrentUser().getUid())
-                                .updateChildren(userMap);
+                        databaseReference.child(mAuth.getCurrentUser().getUid()).updateChildren(userMap);
                         progressDialog.dismiss();
                         if (getType.equals("Drivers")) {
                             startActivity(new Intent(SettingActivity.this, DriverMapsActivity.class));

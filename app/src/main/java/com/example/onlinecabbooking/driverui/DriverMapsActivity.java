@@ -7,6 +7,8 @@ import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,8 +40,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCallback,
@@ -63,6 +68,9 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
 
     private ValueEventListener AssignedCustomerPickUpRefListener;
 
+    private TextView txtname,txtphone;
+    private CircleImageView profilepic;
+    private RelativeLayout relativeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +84,14 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
 
         btn_driver_logout = findViewById(R.id.btn_driver_logout);
         btn_driver_setting = findViewById(R.id.btn_driver_setting);
+
+
+        txtname = findViewById(R.id.customer_name);
+        txtphone = findViewById(R.id.customer_phone);
+        profilepic = findViewById(R.id.customer_profile_image);
+        relativeLayout = findViewById(R.id.rel2);
+
+
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -111,8 +127,7 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
 
     private void GetAssignedCustomerRequest() {
 
-        AssignedCustomerRef = FirebaseDatabase.getInstance().getReference()
-                .child("Users").child("Drivers").child(driverID).child("CustomerRideID");
+        AssignedCustomerRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(driverID).child("CustomerRideID");
         AssignedCustomerRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -120,6 +135,12 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
                 if (snapshot.exists()) {
                     customerID = snapshot.getValue().toString();
                     GetAssignedCustomerPickUpLocation();
+
+                    relativeLayout.setVisibility(View.VISIBLE);
+                    GetAssignedPassengerInformation();
+
+
+
                 } else {
                     customerID = "";
                     if (pickupMaker != null) {
@@ -130,7 +151,7 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
 
                     }
 
-
+                    relativeLayout.setVisibility(View.GONE);
                 }
 
             }
@@ -169,8 +190,7 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
                     }
 
                     LatLng DriverLatLng = new LatLng(LocationLat, LocationLng);
-                    pickupMaker =  mMap.addMarker(new MarkerOptions()
-                            .position(DriverLatLng).title("Passenger Pickup Location").icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_user)));
+                    pickupMaker =  mMap.addMarker(new MarkerOptions().position(DriverLatLng).title("Passenger Pickup Location").icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_user)));
 
                 }
 
@@ -277,8 +297,7 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
     private void DissconnectTheDriver() {
 
         String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference DriverAvailibilityReferences = FirebaseDatabase.getInstance()
-                .getReference().child("Driver Available");
+        DatabaseReference DriverAvailibilityReferences = FirebaseDatabase.getInstance().getReference().child("Driver Available");
         GeoFire geoFire = new GeoFire(DriverAvailibilityReferences);
         geoFire.removeLocation(userID);
         LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
@@ -290,6 +309,37 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
         startActivity(intent);
         finish();
     }
+
+
+
+    private void GetAssignedPassengerInformation(){
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(customerID);
+
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists() && snapshot.getChildrenCount()>0){
+
+                    String name = snapshot.child("name").getValue().toString();
+                    String phone = snapshot.child("phone").getValue().toString();
+                    txtname.setText(name);
+                    txtphone.setText(phone);
+
+                    if (snapshot.hasChild("image")) {
+                        String image = snapshot.child("image").getValue().toString();
+                        Picasso.get().load(image).into(profilepic);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
 
 
 }
