@@ -42,11 +42,12 @@
 
     <Button
         android:id="@+id/btn_call_cab"
-        android:layout_width="match_parent"
+        android:layout_width="317dp"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="29dp"
+        android:layout_marginEnd="100dp"
+        android:layout_marginStart="25dp"
         android:layout_marginBottom="21dp"
         android:background="@drawable/driver_btn_bg"
         android:text="Hire A Cab" />
