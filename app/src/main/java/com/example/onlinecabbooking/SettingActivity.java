@@ -82,7 +82,6 @@ public class SettingActivity extends AppCompatActivity {
         btn_save = findViewById(R.id.btn_save);
         btnprofile = findViewById(R.id.btn_change_pp);
 
-
         btn_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
