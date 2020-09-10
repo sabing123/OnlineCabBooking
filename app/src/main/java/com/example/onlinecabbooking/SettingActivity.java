@@ -62,7 +62,6 @@ public class SettingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_setting);
 
         getType = getIntent().getStringExtra("type");
-        Toast.makeText(this, getType, Toast.LENGTH_SHORT).show();
 
         mAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(getType);

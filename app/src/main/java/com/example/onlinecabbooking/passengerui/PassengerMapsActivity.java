@@ -192,7 +192,7 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
 
     private void GetClosestDriverCab() {
         GeoFire geoFire = new GeoFire(DriverAvailableRef);
-        GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(PassengerPickUpLocation.latitude, PassengerPickUpLocation.longitude), radius);
+        geoQuery = geoFire.queryAtLocation(new GeoLocation(PassengerPickUpLocation.latitude, PassengerPickUpLocation.longitude), radius);
         geoQuery.removeAllListeners();
 
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
