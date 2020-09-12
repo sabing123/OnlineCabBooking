@@ -6,6 +6,8 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -34,6 +36,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -59,7 +62,7 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
     Location lastlocation;
     LocationRequest locationRequest;
 
-    private Button Customer_Logout_btn, btn_call_cab,btn_customer_setting;
+    private Button btn_call_cab;
     private String passengerID;
     private LatLng PassengerPickUpLocation;
     private int radius = 1;
@@ -83,6 +86,11 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
     private CircleImageView profilepic;
     private RelativeLayout relativeLayout;
 
+    //    for floating button
+    FloatingActionButton main_passenger_fab, btn_passenger_setting, btn_passenger_logout;
+    Animation passenger_fabopen, passenger_fabclose, passenger_fabRclockwise, passenger_fabRanticlockwise;
+    boolean isOpen = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,8 +104,17 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
         DriverAvailableRef = FirebaseDatabase.getInstance().getReference().child("Driver Available");
         DriverLocationRef = FirebaseDatabase.getInstance().getReference().child("Drivers Working");
 
-        Customer_Logout_btn = findViewById(R.id.btn_customer_logout);
-        btn_customer_setting = findViewById(R.id.btn_customer_setting);
+        //floating button for passenger
+        main_passenger_fab = findViewById(R.id.main_p_fab);
+        btn_passenger_setting = findViewById(R.id.main_p_btn_setting);
+        btn_passenger_logout = findViewById(R.id.main_p_btn_logout);
+
+        passenger_fabopen = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
+        passenger_fabclose = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
+        passenger_fabRclockwise = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_clockwise);
+        passenger_fabRanticlockwise = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_anitclockwise);
+
+
         btn_call_cab = findViewById(R.id.btn_call_cab);
 
 
@@ -113,7 +130,40 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        btn_customer_setting.setOnClickListener(new View.OnClickListener() {
+
+        main_passenger_fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isOpen) {
+                    btn_passenger_logout.startAnimation(passenger_fabclose);
+                    btn_passenger_setting.startAnimation(passenger_fabclose);
+
+
+                    main_passenger_fab.startAnimation(passenger_fabRanticlockwise);
+
+
+                    btn_passenger_logout.setClickable(false);
+                    btn_passenger_setting.setClickable(false);
+                    isOpen = false;
+                } else {
+                    btn_passenger_logout.startAnimation(passenger_fabopen);
+                    btn_passenger_setting.startAnimation(passenger_fabopen);
+
+
+                    main_passenger_fab.startAnimation(passenger_fabRclockwise);
+
+
+                    btn_passenger_logout.setClickable(true);
+                    btn_passenger_setting.setClickable(true);
+                    isOpen = true;
+
+                }
+
+            }
+        });
+
+
+        btn_passenger_setting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(PassengerMapsActivity.this, SettingActivity.class);
@@ -122,7 +172,7 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
             }
         });
 
-        Customer_Logout_btn.setOnClickListener(new View.OnClickListener() {
+        btn_passenger_logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mAuth.signOut();
@@ -176,7 +226,7 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
                     geoFire.setLocation(passengerID, new GeoLocation(lastlocation.getLatitude(), lastlocation.getLongitude()));
 
                     PassengerPickUpLocation = new LatLng(lastlocation.getLatitude(), lastlocation.getLongitude());
-                    mMap.addMarker(new MarkerOptions().position(PassengerPickUpLocation).title("My Location").icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_user)));
+                   pickupMarker =  mMap.addMarker(new MarkerOptions().position(PassengerPickUpLocation).title("My Location").icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_user)));
 
                     btn_call_cab.setText("Getting Your Cab...");
                     GetClosestDriverCab();
@@ -308,7 +358,9 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
 
         mMap = googleMap;
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED) {
             return;
         }
         buildGoogleAPIClient();
@@ -322,7 +374,9 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
         locationRequest.setFastestInterval(1000);
         locationRequest.setPriority(locationRequest.PRIORITY_HIGH_ACCURACY);
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED) {
             return;
         }
         LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);

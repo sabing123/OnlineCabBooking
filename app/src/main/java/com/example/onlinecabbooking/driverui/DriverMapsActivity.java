@@ -6,19 +6,20 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import com.example.onlinecabbooking.MainActivity;
 import com.example.onlinecabbooking.R;
 import com.example.onlinecabbooking.SettingActivity;
-import com.example.onlinecabbooking.passengerui.PassengerMapsActivity;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.common.ConnectionResult;
@@ -33,6 +34,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -56,34 +58,48 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
     GoogleApiClient googleApiClient;
     Location lastlocation;
     LocationRequest locationRequest;
-    private Button btn_driver_logout, btn_driver_setting;
 
     private FirebaseAuth mAuth;
     private FirebaseUser dCurrentUser;
-
     private Boolean CurrentLogoutDriverStatus = false;
+
+
     private DatabaseReference AssignedCustomerRef, AssignedCustomerPickUpRef;
-    private String driverID, customerID = "";
+    private String driverID;
+    private String customerID = "";
     Marker pickupMaker;
 
     private ValueEventListener AssignedCustomerPickUpRefListener;
 
-    private TextView txtname,txtphone;
+    private TextView txtname, txtphone;
     private CircleImageView profilepic;
     private RelativeLayout relativeLayout;
+
+    //    for floating button
+    FloatingActionButton main_fab, btn_driver_setting, btn_driver_logout;
+    Animation fabopen, fabclose, fabRclockwise, fabRanticlockwise;
+    boolean isOpen = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_maps);
 
+
+        main_fab = findViewById(R.id.main_fab);
+        btn_driver_setting = findViewById(R.id.main_btn_setting);
+        btn_driver_logout = findViewById(R.id.main_btn_logout);
+
+        fabopen = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
+        fabclose = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
+        fabRclockwise = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_clockwise);
+        fabRanticlockwise = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_anitclockwise);
+
+
         mAuth = FirebaseAuth.getInstance();
         dCurrentUser = mAuth.getCurrentUser();
         driverID = mAuth.getCurrentUser().getUid();
-
-
-        btn_driver_logout = findViewById(R.id.btn_driver_logout);
-        btn_driver_setting = findViewById(R.id.btn_driver_setting);
 
 
         txtname = findViewById(R.id.customer_name);
@@ -92,18 +108,49 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
         relativeLayout = findViewById(R.id.rel2);
 
 
-
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
 
+        main_fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isOpen) {
+                    btn_driver_logout.startAnimation(fabclose);
+                    btn_driver_setting.startAnimation(fabclose);
+
+
+                    main_fab.startAnimation(fabRanticlockwise);
+
+
+                    btn_driver_logout.setClickable(false);
+                    btn_driver_setting.setClickable(false);
+                    isOpen = false;
+                } else {
+                    btn_driver_logout.startAnimation(fabopen);
+                    btn_driver_setting.startAnimation(fabopen);
+
+
+                    main_fab.startAnimation(fabRclockwise);
+
+
+                    btn_driver_logout.setClickable(true);
+                    btn_driver_setting.setClickable(true);
+                    isOpen = true;
+
+                }
+
+            }
+        });
+
+
         btn_driver_setting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(DriverMapsActivity.this, SettingActivity.class);
-                intent.putExtra("type","Drivers");
+                intent.putExtra("type", "Drivers");
                 startActivity(intent);
             }
         });
@@ -117,6 +164,7 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
                 DissconnectTheDriver();
 
                 mAuth.signOut();
+
                 LogoutDriver();
             }
         });
@@ -127,7 +175,9 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
 
     private void GetAssignedCustomerRequest() {
 
-        AssignedCustomerRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(driverID).child("CustomerRideID");
+        AssignedCustomerRef = FirebaseDatabase.getInstance().getReference()
+                .child("Users").child("Drivers").child(driverID).child("CustomerRideID");
+
         AssignedCustomerRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -138,7 +188,6 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
 
                     relativeLayout.setVisibility(View.VISIBLE);
                     GetAssignedPassengerInformation();
-
 
 
                 } else {
@@ -169,6 +218,7 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
 
         AssignedCustomerPickUpRef = FirebaseDatabase.getInstance().getReference().child("Customer Request")
                 .child(customerID).child("l");
+
         AssignedCustomerPickUpRefListener = AssignedCustomerPickUpRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -190,7 +240,7 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
                     }
 
                     LatLng DriverLatLng = new LatLng(LocationLat, LocationLng);
-                    pickupMaker =  mMap.addMarker(new MarkerOptions().position(DriverLatLng).title("Passenger Pickup Location").icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_user)));
+                    pickupMaker = mMap.addMarker(new MarkerOptions().position(DriverLatLng).title("Passenger Pickup Location").icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_cab)));
 
                 }
 
@@ -213,6 +263,7 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
+
         buildGoogleAPIClient();
         mMap.setMyLocationEnabled(true);
     }
@@ -299,9 +350,10 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
 
         String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference DriverAvailibilityReferences = FirebaseDatabase.getInstance().getReference().child("Driver Available");
+
         GeoFire geoFire = new GeoFire(DriverAvailibilityReferences);
         geoFire.removeLocation(userID);
-        LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
+
     }
 
     private void LogoutDriver() {
@@ -312,14 +364,13 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
     }
 
 
-
-    private void GetAssignedPassengerInformation(){
+    private void GetAssignedPassengerInformation() {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(customerID);
 
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists() && snapshot.getChildrenCount()>0){
+                if (snapshot.exists() && snapshot.getChildrenCount() > 0) {
 
                     String name = snapshot.child("name").getValue().toString();
                     String phone = snapshot.child("phone").getValue().toString();
@@ -340,7 +391,6 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
         });
 
     }
-
 
 
 }

@@ -14,6 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.onlinecabbooking.R;
+import com.example.onlinecabbooking.SettingActivity;
+import com.example.onlinecabbooking.driverui.DriverLoginRegisterActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
@@ -126,6 +128,9 @@ public class CustomerLoginRegisterActivity extends AppCompatActivity {
                                 startActivity(new Intent(CustomerLoginRegisterActivity.this, PassengerMapsActivity.class));
                                 Toast.makeText(CustomerLoginRegisterActivity.this, "Successfully Login...", Toast.LENGTH_SHORT).show();
                                 dialog.dismiss();
+                                Intent intent = new Intent(CustomerLoginRegisterActivity.this, SettingActivity.class);
+                                intent.putExtra("type","Customers");
+                                startActivity(intent);
 
                             } else {
                                 Toast.makeText(CustomerLoginRegisterActivity.this, "Failed to Login Customer. Please Try Again.", Toast.LENGTH_SHORT).show();

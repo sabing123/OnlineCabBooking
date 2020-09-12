@@ -14,6 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.onlinecabbooking.R;
+import com.example.onlinecabbooking.SettingActivity;
+import com.example.onlinecabbooking.passengerui.PassengerMapsActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -109,7 +111,10 @@ public class DriverLoginRegisterActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 Toast.makeText(DriverLoginRegisterActivity.this, "Successfully Login...", Toast.LENGTH_SHORT).show();
                                 dialog.dismiss();
-                                startActivity(new Intent(DriverLoginRegisterActivity.this, DriverMapsActivity.class));
+                                Intent intent = new Intent(DriverLoginRegisterActivity.this, SettingActivity.class);
+                                intent.putExtra("type","Drivers");
+                                startActivity(intent);
+
                             } else {
                                 Toast.makeText(DriverLoginRegisterActivity.this, "Failed to Login. Please Try Again.", Toast.LENGTH_SHORT).show();
                                 dialog.dismiss();
