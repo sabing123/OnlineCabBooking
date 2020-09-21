@@ -23,8 +23,8 @@
             android:layout_width="1000dp"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|start"
-            android:layout_marginLeft="25dp"
-            android:layout_marginBottom="90dp"
+            android:layout_marginLeft="23dp"
+            android:layout_marginBottom="85dp"
             android:backgroundTint="#fff"
             android:clickable="true"
             android:visibility="invisible"
@@ -32,17 +32,30 @@
             app:srcCompat="@drawable/ic_baseline_settings" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/main_p_btn_payment"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start"
+            android:backgroundTint="#fff"
+            app:fabSize="mini"
+            android:visibility="invisible"
+            android:layout_marginBottom="60dp"
+            android:layout_marginLeft="65dp"
+            android:clickable="true"
+            app:srcCompat="@drawable/payment_icon" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/main_p_btn_logout"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|start"
-            android:layout_marginLeft="75dp"
-            android:layout_marginBottom="60dp"
             android:backgroundTint="#fff"
-            android:clickable="true"
-            android:visibility="invisible"
             app:fabSize="mini"
-            app:srcCompat="@drawable/ic_baseline_power_settings_new_24" />
+            android:visibility="invisible"
+            android:layout_marginBottom="13dp"
+            android:layout_marginLeft="80dp"
+            android:clickable="true"
+            app:srcCompat="@drawable/ic_baseline_power_settings_new_24"/>
 
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

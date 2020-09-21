@@ -32,7 +32,7 @@
             app:srcCompat="@drawable/ic_baseline_settings" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/main_btn_logout"
+            android:id="@+id/main_btn_payment"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|start"
@@ -41,6 +41,19 @@
             android:visibility="invisible"
             android:layout_marginBottom="60dp"
             android:layout_marginLeft="75dp"
+            android:clickable="true"
+            app:srcCompat="@drawable/payment_icon" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/main_btn_logout"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start"
+            android:backgroundTint="#fff"
+            app:fabSize="mini"
+            android:visibility="invisible"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="85dp"
             android:clickable="true"
             app:srcCompat="@drawable/ic_baseline_power_settings_new_24" />
 
