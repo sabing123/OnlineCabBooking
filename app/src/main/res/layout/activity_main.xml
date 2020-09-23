@@ -8,10 +8,10 @@
     <LinearLayout
         android:id="@+id/firstLayout"
         android:layout_width="match_parent"
-        android:layout_height="711dp"
+        android:layout_height="match_parent"
         android:layout_alignParentTop="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="72dp"
+        android:layout_marginBottom="0dp"
         android:background="@color/primary_dark"
         android:orientation="vertical">
 

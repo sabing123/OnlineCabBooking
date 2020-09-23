@@ -15,10 +15,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.onlinecabbooking.R;
 import com.example.onlinecabbooking.SettingActivity;
-import com.example.onlinecabbooking.driverui.DriverLoginRegisterActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -26,10 +24,9 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class CustomerLoginRegisterActivity extends AppCompatActivity {
 
-    private EditText input_customer_name, input_customer_address, input_customer_mblnum, input_customer_email, input_customer_password;
+    private EditText input_customer_email, input_customer_password;
     private TextView link_customer_login, customer_Status;
     private Button btn_customer_signup, btn_customer_login;
-    TextInputLayout txtname, txtinput_customer_address, txtinput_customer_mobile;
 
     private FirebaseAuth mauth;
     private ProgressDialog dialog;
@@ -47,16 +44,9 @@ public class CustomerLoginRegisterActivity extends AppCompatActivity {
 
         dialog = new ProgressDialog(this, R.style.AppTheme_Dark_Dialog);
 
-        input_customer_name = findViewById(R.id.input_customer_name);
-        input_customer_address = findViewById(R.id.input_customer_address);
-        input_customer_mblnum = findViewById(R.id.input_customer_mobile);
         input_customer_email = findViewById(R.id.input_customer_email);
         input_customer_password = findViewById(R.id.input_customer_password);
 
-        //text Input layout
-        txtname = findViewById(R.id.txtinput_customer_name);
-        txtinput_customer_address = findViewById(R.id.txtinput_customer_address);
-        txtinput_customer_mobile = findViewById(R.id.txtinput_customer_mobile);
 
         //login system
         customer_Status = findViewById(R.id.customer_Status);
@@ -72,13 +62,6 @@ public class CustomerLoginRegisterActivity extends AppCompatActivity {
                 btn_customer_signup.setVisibility(View.INVISIBLE);
                 customer_Status.setText("Customer login System");
 
-                input_customer_name.setVisibility(View.INVISIBLE);
-                input_customer_address.setVisibility(View.INVISIBLE);
-                input_customer_mblnum.setVisibility(View.INVISIBLE);
-
-                txtname.setVisibility(View.INVISIBLE);
-                txtinput_customer_address.setVisibility(View.INVISIBLE);
-                txtinput_customer_mobile.setVisibility(View.INVISIBLE);
                 link_customer_login.setVisibility(View.INVISIBLE);
                 btn_customer_login.setVisibility(View.VISIBLE);
                 btn_customer_login.setEnabled(true);
@@ -129,7 +112,7 @@ public class CustomerLoginRegisterActivity extends AppCompatActivity {
                                 Toast.makeText(CustomerLoginRegisterActivity.this, "Successfully Login...", Toast.LENGTH_SHORT).show();
                                 dialog.dismiss();
                                 Intent intent = new Intent(CustomerLoginRegisterActivity.this, SettingActivity.class);
-                                intent.putExtra("type","Customers");
+                                intent.putExtra("type", "Customers");
                                 startActivity(intent);
 
                             } else {
@@ -164,7 +147,6 @@ public class CustomerLoginRegisterActivity extends AppCompatActivity {
                                 CustomerDatabaseRef.setValue(true);
                                 Intent driverIntent = new Intent(CustomerLoginRegisterActivity.this, PassengerMapsActivity.class);
                                 startActivity(driverIntent);
-
 
                                 Toast.makeText(CustomerLoginRegisterActivity.this, "Successfully Register Customer Information...", Toast.LENGTH_SHORT).show();
                                 dialog.dismiss();

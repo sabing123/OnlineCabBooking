@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingLeft="24dp"
-        android:paddingTop="56dp"
+        android:paddingTop="150dp"
         android:paddingRight="24dp">
 
         <ImageView
@@ -28,41 +28,7 @@
             android:textSize="25dp"
             android:textColor="@color/accent"
             />
-        <!-- Name Label -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:id="@+id/txtinput_customer_name"
-            android:textColorHint="@color/accent">
 
-            <EditText
-                android:id="@+id/input_customer_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Name"
-                android:inputType="textPersonName"
-                android:textColor="@color/accent" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Address Label -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/txtinput_customer_address"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:textColorHint="@color/accent">
-
-            <EditText
-                android:id="@+id/input_customer_address"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Address"
-                android:inputType="textPostalAddress"
-                android:textColor="@color/accent" />
-        </com.google.android.material.textfield.TextInputLayout>
 
 
         <!--  Email Label -->
@@ -101,24 +67,6 @@
         </com.google.android.material.textfield.TextInputLayout>
 
 
-        <!-- mobile number -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:id="@+id/txtinput_customer_mobile"
-            android:layout_marginBottom="8dp"
-            android:textColorHint="@color/accent">
-
-            <EditText
-                android:id="@+id/input_customer_mobile"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Mobile Number"
-                android:inputType="number"
-                android:textColor="@color/accent" />
-        </com.google.android.material.textfield.TextInputLayout>
-
 
         <!-- Signup Button -->
         <androidx.appcompat.widget.AppCompatButton
@@ -131,28 +79,29 @@
             android:padding="12dp"
             android:text="Create Account"
             android:textColor="@color/accent" />
-
-        <TextView android:id="@+id/link_customer_login"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:textColor="@color/accent"
-            android:text="Already a member? Login"
-            android:gravity="center"
-            android:textSize="16dp"/>
-
         <!-- Signup Button -->
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_customer_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="-2dp"
-            android:layout_marginBottom="24dp"
+            android:layout_marginTop="-78dp"
             android:background="@drawable/btn_bg"
             android:padding="12dp"
             android:text="Login"
             android:textColor="@color/accent" />
+
+        <TextView android:id="@+id/link_customer_login"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/accent"
+            android:text="Already a member? Login"
+            android:gravity="center"
+            android:textSize="16dp"/>
+
+
 
     </LinearLayout>
 </ScrollView>
