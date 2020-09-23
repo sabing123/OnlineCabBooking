@@ -23,12 +23,10 @@ public class MainActivity extends AppCompatActivity {
     public void open_driver(View V){
 
         startActivity(new Intent(MainActivity.this, DriverLoginRegisterActivity.class));
-    finish();
     }
 
     public void open_passenger(View V){
         startActivity(new Intent(MainActivity.this, CustomerLoginRegisterActivity.class));
-        finish();
     }
 
 

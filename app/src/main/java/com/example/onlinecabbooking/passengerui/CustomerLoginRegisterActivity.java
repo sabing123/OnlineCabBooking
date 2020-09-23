@@ -39,15 +39,13 @@ public class CustomerLoginRegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_login_register);
 
-
         mauth = FirebaseAuth.getInstance();
 
         dialog = new ProgressDialog(this, R.style.AppTheme_Dark_Dialog);
 
         input_customer_email = findViewById(R.id.input_customer_email);
         input_customer_password = findViewById(R.id.input_customer_password);
-
-
+        
         //login system
         customer_Status = findViewById(R.id.customer_Status);
         link_customer_login = findViewById(R.id.link_customer_login);
