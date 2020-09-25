@@ -87,7 +87,7 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
     private RelativeLayout relativeLayout;
 
     //    for floating button
-    FloatingActionButton main_passenger_fab, btn_passenger_setting, btn_passenger_logout;
+    FloatingActionButton main_passenger_fab, btn_passenger_setting, btn_passenger_logout,main_p_btn_payment;
     Animation passenger_fabopen, passenger_fabclose, passenger_fabRclockwise, passenger_fabRanticlockwise;
     boolean isOpen = false;
 
@@ -108,6 +108,7 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
         main_passenger_fab = findViewById(R.id.main_p_fab);
         btn_passenger_setting = findViewById(R.id.main_p_btn_setting);
         btn_passenger_logout = findViewById(R.id.main_p_btn_logout);
+        main_p_btn_payment = findViewById(R.id.main_p_btn_payment);
 
         passenger_fabopen = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
         passenger_fabclose = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
@@ -137,31 +138,32 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
                 if (isOpen) {
                     btn_passenger_logout.startAnimation(passenger_fabclose);
                     btn_passenger_setting.startAnimation(passenger_fabclose);
-
+                    main_p_btn_payment.startAnimation(passenger_fabclose);
 
                     main_passenger_fab.startAnimation(passenger_fabRanticlockwise);
 
 
                     btn_passenger_logout.setClickable(false);
                     btn_passenger_setting.setClickable(false);
+                    main_p_btn_payment.setClickable(false);
                     isOpen = false;
                 } else {
                     btn_passenger_logout.startAnimation(passenger_fabopen);
                     btn_passenger_setting.startAnimation(passenger_fabopen);
-
+                    main_p_btn_payment.startAnimation(passenger_fabopen);
 
                     main_passenger_fab.startAnimation(passenger_fabRclockwise);
 
 
                     btn_passenger_logout.setClickable(true);
                     btn_passenger_setting.setClickable(true);
+                    main_p_btn_payment.setClickable(true);
                     isOpen = true;
 
                 }
 
             }
         });
-
 
         btn_passenger_setting.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -76,7 +76,7 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
     private RelativeLayout relativeLayout;
 
     //    for floating button
-    FloatingActionButton main_fab, btn_driver_setting, btn_driver_logout;
+    FloatingActionButton main_fab, btn_driver_setting, btn_driver_logout, main_btn_payment;
     Animation fabopen, fabclose, fabRclockwise, fabRanticlockwise;
     boolean isOpen = false;
 
@@ -90,6 +90,7 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
         main_fab = findViewById(R.id.main_fab);
         btn_driver_setting = findViewById(R.id.main_btn_setting);
         btn_driver_logout = findViewById(R.id.main_btn_logout);
+        main_btn_payment = findViewById(R.id.main_btn_payment);
 
         fabopen = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
         fabclose = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
@@ -120,24 +121,23 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
                 if (isOpen) {
                     btn_driver_logout.startAnimation(fabclose);
                     btn_driver_setting.startAnimation(fabclose);
-
+                    main_btn_payment.startAnimation(fabclose);
 
                     main_fab.startAnimation(fabRanticlockwise);
-
-
                     btn_driver_logout.setClickable(false);
                     btn_driver_setting.setClickable(false);
+                    main_btn_payment.setClickable(false);
                     isOpen = false;
                 } else {
                     btn_driver_logout.startAnimation(fabopen);
                     btn_driver_setting.startAnimation(fabopen);
-
+                    main_btn_payment.startAnimation(fabopen);
 
                     main_fab.startAnimation(fabRclockwise);
 
-
                     btn_driver_logout.setClickable(true);
                     btn_driver_setting.setClickable(true);
+                    main_btn_payment.setClickable(true);
                     isOpen = true;
 
                 }
