@@ -7,7 +7,7 @@
          location permissions for the "MyLocation" functionality.
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission. ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -23,11 +23,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-
-        <activity android:name=".SplashScreenActivity">
-
-
-        </activity>
+        <activity android:name=".NewsActivity"></activity>
+        <activity android:name=".SplashScreenActivity"></activity>
         <activity android:name=".SettingActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -53,7 +50,6 @@
         <activity android:name=".passengerui.CustomerLoginRegisterActivity" />
         <activity android:name=".driverui.DriverLoginRegisterActivity" />
         <activity android:name=".MainActivity">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -18,9 +18,26 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="255dp"
+            android:layout_marginTop="205dp"
             android:gravity="center"
             android:src="@drawable/logo2" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/hidetext"
+            android:text="Read News"
+            android:textSize="25dp"
+            android:textColor="#fff"
+            android:layout_marginTop="70dp"
+            android:layout_marginLeft="250dp"/>
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="100dp"
+            android:layout_height="120dp"
+            android:layout_gravity="right"
+            android:src="@drawable/swipeleft" />
     </LinearLayout>
 
     <LinearLayout
@@ -43,8 +60,7 @@
             android:layout_weight="1.5"
             android:background="@drawable/btn_bg"
             android:onClick="open_driver"
-            android:text="I am Driver"
-            />
+            android:text="I am Driver" />
 
         <Button
             android:id="@+id/btncustomer"
@@ -54,6 +70,7 @@
             android:background="@drawable/btn_bg"
             android:onClick="open_passenger"
             android:text="I am Passenger" />
+
 
     </LinearLayout>
 
