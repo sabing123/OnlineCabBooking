@@ -13,6 +13,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.onlinecabbooking.driverui.DriverLoginRegisterActivity;
+import com.example.onlinecabbooking.news.NewsActivity;
 import com.example.onlinecabbooking.passengerui.CustomerLoginRegisterActivity;
 
 
